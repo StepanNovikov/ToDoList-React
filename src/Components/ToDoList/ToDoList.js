@@ -1,17 +1,22 @@
 import React, {Component} from "react";
 import "./ToDoList.css";
+import Task from "./Task"
 
 class ToDoList extends Component {
     constructor(props) {
         super();
 
+        this.newIndex = 2;
+
         this.state = {
             tasks: [
                 {
+                    id:0,
                     title: "learn js",
                     isDone: false
                 },
                 {
+                    id:1,
                     title: "learn react",
                     isDone: false
                 }
@@ -22,23 +27,19 @@ class ToDoList extends Component {
     createNewTask(event){
         if(event.key === 'Enter'){
             this.setState({
-                tasks: [...this.state.tasks,{title: event.currentTarget.value, isDone: false}]
-            })
+                tasks: [...this.state.tasks, {id: this.newIndex, title: event.currentTarget.value, isDone: false}]
+            });
             event.currentTarget.value = ''
+            this.newIndex ++;
         }
     }
 
-    deleteTask(task, event){
+    deleteTask(taskId){
         this.setState({
             tasks: this.state.tasks.filter((t) => {
-                return t !== task;
+                return t.id !== taskId;
             })
         })
-    }
-
-    toggleTaskStatus(task, event){
-        task.isDone = !task.isDone;
-        this.forceUpdate() //принудительно апдейтит
     }
 
     render() {
@@ -49,12 +50,8 @@ class ToDoList extends Component {
                 </div>
                 <div className="tasks">
                     {
-                        this.state.tasks.map((task) => {
-                            return <div className={task.isDone? 'task done':'task'}>
-                                <input type="checkbox" onClick={this.toggleTaskStatus.bind(this, task)}/>
-                                {task.title}
-                            <span className="delete" onClick={this.deleteTask.bind(this, task)}>x</span>
-                            </div>
+                        this.state.tasks.map((task, index) => {
+                            return <Task task = {task} deleteCallback={this.deleteTask.bind(this)} key={task.id}/>
                         })
                     }
 
