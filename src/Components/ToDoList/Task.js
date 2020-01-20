@@ -3,7 +3,7 @@ import "./Task.css";
 
 class Task extends Component {
     constructor(props) {
-        super();
+        super(props);
 
         this.parentDeleteCallback = props.deleteCallback;
         this.parentUpdateCallback = props.updateCallback;
@@ -18,7 +18,7 @@ class Task extends Component {
             ...this.props.task
         };
 
-        task.isDone = !this.isDone
+        task.isDone = !task.isDone
 
         this.parentUpdateCallback(task);
     }
