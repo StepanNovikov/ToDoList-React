@@ -5,34 +5,33 @@ class Task extends Component {
     constructor(props) {
         super();
 
-        this.state = {
-            task: props.task
-        };
-
         this.parentDeleteCallback = props.deleteCallback;
+        this.parentUpdateCallback = props.updateCallback;
     }
 
     deleteTask(event){
-        this.parentDeleteCallback(this.state.task.id);
+        this.parentDeleteCallback(this.props.task.id);
     }
 
     toggleTaskStatus( event){
-        var newTask = {
-            ...this.state.task,
-            isDone: !this.state.task.isDone
+        var task = {
+            ...this.props.task
         };
 
-        this.setState({
-            task: newTask
-        })
+        task.isDone = !this.isDone
+
+        this.parentUpdateCallback(task);
     }
 
     render() {
         return(
-        <div className={this.state.task.isDone? 'task done':'task'}>
-            <input type="checkbox" checked={this.state.isDone} onClick={this.toggleTaskStatus.bind(this)}/>
-            {this.state.task.title}
-            <span className="delete" onClick={this.deleteTask.bind(this)}>x</span>
+        <div className={this.props.task.isDone? 'task done':'task'}>
+            <input type="checkbox"
+                   checked={this.props.isDone}
+                   onClick={this.toggleTaskStatus.bind(this)}/>
+            {this.props.task.title}
+            <span className="delete"
+                  onClick={this.deleteTask.bind(this)}>x</span>
         </div>
         );
     }

@@ -1,6 +1,9 @@
 import React, {Component} from "react";
 import "./ToDoList.css";
 import Task from "./Task"
+import ToDoListFooter from "./ToDoListFooter";
+import ToDoListTaskCreator from "./ToDoListTaskCreator";
+import TasksList from "./TasksList"
 
 class ToDoList extends Component {
     constructor(props) {
@@ -24,14 +27,11 @@ class ToDoList extends Component {
         }
     }
 
-    createNewTask(event){
-        if(event.key === 'Enter'){
-            this.setState({
-                tasks: [...this.state.tasks, {id: this.newIndex, title: event.currentTarget.value, isDone: false}]
-            });
-            event.currentTarget.value = ''
-            this.newIndex ++;
-        }
+    createNewTask(task){
+        this.setState({
+            tasks: [...this.state.tasks, task]
+
+        });
     }
 
     deleteTask(taskId){
@@ -42,20 +42,32 @@ class ToDoList extends Component {
         })
     }
 
+    updateTask(task){
+        const newTasksList = [...this.state.tasks];
+
+        newTasksList.forEach((t) => {
+            if(t.id === task.id){
+                t.isDone = task.isDone;
+                return;
+            }
+        });
+
+        this.setState({
+            tasks: newTasksList
+        })
+    }
+
     render() {
         return(
             <div className="todolist">
-                <div className="header">
-                    <input onKeyPress={this.createNewTask.bind(this)}/>
-                </div>
-                <div className="tasks">
-                    {
-                        this.state.tasks.map((task, index) => {
-                            return <Task task = {task} deleteCallback={this.deleteTask.bind(this)} key={task.id}/>
-                        })
-                    }
 
-                </div>
+                <ToDoListTaskCreator onCreate={this.createNewTask.bind(this)} />
+
+                <TasksList  tasks={this.state.tasks}
+                            onDelete={this.deleteTask.bind(this)}
+                            onUpdate = {this.updateTask.bind(this)}/>
+
+                <ToDoListFooter/>
             </div>
         );
     }
